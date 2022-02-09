@@ -31,5 +31,7 @@ pipeline {
                     git tag -a $tagName -m "$tagName release of Covid Deaths" $commitSha
                     echo "tag pushing"
                 '''
+            }
+        }
     }
 }
