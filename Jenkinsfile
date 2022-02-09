@@ -26,9 +26,7 @@ pipeline {
         stage('Tag') {
             steps {
                 sh '''
-                    tagName="v0.14.0"
-                    commitSha="4cd5c9830f4e21ff90feb40e9834024a981667d4"
-                    git tag -a $tagName -m "$tagName release of Covid Deaths" $commitSha
+                    git tag -a v0.14.0 -m "v0.14.0 release of Covid-19" 4cd5c9830f4e21ff90feb40e9834024a981667d4
                     echo "tag pushing"
                 '''
             }
