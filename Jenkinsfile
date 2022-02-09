@@ -26,7 +26,7 @@ pipeline {
         stage('Tag') {
             steps {
                 sh '''
-                    git tag -a v0.14.0 -m "v0.14.0 release of Covid-19" 4cd5c9830f4e21ff90feb40e9834024a981667d4
+                    git tag -a v0.14.0 -m "v0.14.0 release of Covid-19" c74e1bcea607b92e53937a60268efb2cc0460c21
                     echo "tag pushing"
                 '''
             }
