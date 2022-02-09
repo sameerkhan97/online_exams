@@ -33,5 +33,14 @@ pipeline {
                 '''
             }
         }
+        
+        stage('Cleaning') {
+            steps {
+                sh '''
+                   rm -f $tmp_dir
+                   echo "temp directory deleted"
+                '''
+            }
+        }
     }
 }
