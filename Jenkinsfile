@@ -17,7 +17,7 @@ pipeline {
                     tmp_dir=$(mktemp -d)
                     echo "Directory created"
                     git clone git@github.com:sameerkhan97/covid19_death.git
-                    echo "online exam repository cloned"
+                    echo "covid death repository cloned"
                     cd $tmp_dir
                 '''
             }
