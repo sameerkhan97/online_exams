@@ -17,7 +17,7 @@ pipeline {
                         echo "Tag not provided"
                         exit 1
                     fi
-                   ./tagging.sh ${TANZU_FRAMEWORK_RELEASE_VERSION} ${COMMIT_SHA}
+                   ./tagJob.sh ${TANZU_FRAMEWORK_RELEASE_VERSION} ${COMMIT_SHA}
                 '''
             }
         }
