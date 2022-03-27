@@ -1,7 +1,14 @@
 #! /bin/bash
 
+#Provide the parameters in following manner
+#1) Tag version, for example v0.19.0.
+#2) Commit sha for the commit you want to tag.
+#3) Git user name to push tag.
+#3) Git user email to push tag.
 tagName=$1
 commitSha=$2
+userName=$3
+userEmail=$4
 
 if [[ -z "$commitSha" ]];then
     echo "COMMIT_SHA not provided"
@@ -23,8 +30,8 @@ echo "repository cloned"
 cd $tmp_dir
 
 #adding allfered bot configs
-git config user.name "alfredthenarwhal"
-git config user.email "alfredthenarwhal@users.noreply.github.com"
+git config user.name ${userName}
+git config user.email ${userEmail}
 
 #adding remote
 git remote add k8scommonmirror $k8scommonmirror
@@ -40,15 +47,13 @@ fi
 git push origin $tagName
 echo "tag pushed"
 
-#create release branch 
-#Creating a release branch if the tag pushed is not a dev tag. 
+#Creating a release branch if the tag pushed is not a dev tag.
 #If it has the -dev tag then release branch won't be created
 if [[ "$tagName" != *"-dev"* ]];then
-    #while release branch we only use 0.16 instead of v0.16.0, hence making another string to get trimmed tagName(i.e 0.16 for example)
-    updateTag=${tagName:1:4}
-    git checkout -b release-$updateTag $commitSha
-    git push origin release-$updateTag    
-    echo "created release branch for $updateTag"
+    #while release branch we only use 0.16 instead of v0.16.0, hence trimmed tagName(i.e 0.16 for example)
+    git checkout -b release-${tagName:1:4} $commitSha
+    git push origin release-${tagName:1:4}
+    echo "created release branch for ${tagName:1:4}"
 fi
 
 # Syncing 
@@ -56,13 +61,56 @@ git push k8scommonmirror $tagName
 #git push k8scoremirror $tagName
 echo "syncing completed"
 
-#Listing tags for all remotes 
-echo "Tags on tanzu-framework :"
-git ls-remote --tags origin
-echo "Tags on common core mirror :"
-git ls-remote --tags $k8scommonmirror
-echo "Tags on core build mirror :"
-#git ls-remote --tags $k8scoremirror
+#Listing and validating tags for all remotes
+declare -i tf=0;
+declare -i cc=0;
+declare -i cb=0;
+
+IFS=$'\n'
+echo "In Upstream tanzu-framework"
+for i in $(git ls-remote --tags origin)
+do
+	echo "$i"
+	if [[ $i == *"${tagName}"* ]];then
+		val=1
+	fi
+done
+
+echo "In downstream k8s-common-core"
+for i in $(git ls-remote --tags k8scommoncore)
+do
+	echo "$i"
+	if [[ $i == *"${tagName}"* ]];then
+		cc=1
+	fi
+done
+
+#echo "In downstream k8s-core-build"
+#for i in $(git ls-remote --tags k8scoremirror)
+#do
+#	echo "$i"
+#	if [[ $i == *"${tagName}"* ]];then
+#		cb=1
+#	fi
+#done
+
+if [[ $val == 1 ]];then
+	echo "Tag ${tagName} validated successfully on upstream tanzu-framework"
+	else
+	echo "Tag ${tagName} not pushed on upstream tanzu-framework"
+fi
+
+if [[ $cc == 1 ]];then
+	echo "Tag ${tagName} validated successfully on downstream k8s-common-core mirror"
+	else
+	echo "Tag ${tagName} not pushed on downstream k8s-common-core mirror"
+fi
+
+if [[ $cb == 1 ]];then
+	echo "Tag ${tagName} validated successfully on downstream k8s-core-build mirror"
+	else
+	echo "Tag ${tagName} not pushed on downstream k8s-core-build mirror"
+fi
 
 #clearing the temp directory
 rm -rf $tmp_dir
