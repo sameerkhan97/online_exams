@@ -77,7 +77,7 @@ do
 done
 
 echo "In downstream k8s-common-core"
-for i in $(git ls-remote --tags k8scommoncore)
+for i in $(git ls-remote --tags k8scommonmirror)
 do
 	echo "$i"
 	if [[ $i == *"${tagName}"* ]];then
