@@ -106,11 +106,11 @@ if [[ $cc == 1 ]];then
 	echo "Tag ${tagName} not pushed on downstream k8s-common-core mirror"
 fi
 
-if [[ $cb == 1 ]];then
-	echo "Tag ${tagName} validated successfully on downstream k8s-core-build mirror"
-	else
-	echo "Tag ${tagName} not pushed on downstream k8s-core-build mirror"
-fi
+#if [[ $cb == 1 ]];then
+#	echo "Tag ${tagName} validated successfully on downstream k8s-core-build mirror"
+#	else
+#	echo "Tag ${tagName} not pushed on downstream k8s-core-build mirror"
+#fi
 
 #clearing the temp directory
 rm -rf $tmp_dir
