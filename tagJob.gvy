@@ -1,5 +1,6 @@
 #!groovy
 pipeline {
+    agent 'any'
     parameters {
         string(description: 'Enter tanzu framework release version which you want to tag' , name:'TANZU_FRAMEWORK_RELEASE_VERSION' , defaultValue:'v0.18.0')
         string(description: 'Enter commit sha for the commit which you want to tag ' , name:'COMMIT_SHA' , defaultValue:'')
