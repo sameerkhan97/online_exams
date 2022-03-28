@@ -1,10 +1,10 @@
 #! /bin/bash
-
+  
 #Provide the parameters in following manner
 #1) Tag version, for example v0.19.0.
 #2) Commit sha for the commit you want to tag.
 #3) Git user name to push tag.
-#3) Git user email to push tag.
+#4) Git user email to push tag.
 tagName=$1
 commitSha=$2
 userName=$3
