@@ -72,7 +72,7 @@ for i in $(git ls-remote --tags origin)
 do
 	echo "$i"
 	if [[ $i == *"${tagName}"* ]];then
-		val=1
+		tf=1
 	fi
 done
 
@@ -94,7 +94,7 @@ done
 #	fi
 #done
 
-if [[ $val == 1 ]];then
+if [[ $tf == 1 ]];then
 	echo "Tag ${tagName} validated successfully on upstream tanzu-framework"
 	else
 	echo "Tag ${tagName} validation failed on upstream tanzu-framework"
