@@ -19,7 +19,7 @@ pipeline {
                         echo "Correct tag not provided"
                         exit 1
                     fi
-                   ./tagJob.sh ${TANZU_FRAMEWORK_RELEASE_VERSION} ${COMMIT_SHA} ${USER_NAME} ${USER_EMAIL}
+                   ./tagging-script.sh ${TANZU_FRAMEWORK_RELEASE_VERSION} ${COMMIT_SHA} ${USER_NAME} ${USER_EMAIL}
                 '''
             }
         }
