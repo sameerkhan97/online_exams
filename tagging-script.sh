@@ -53,7 +53,7 @@ if [[ "$tagName" != *"-dev"* ]];then
     #while release branch we only use 0.16 instead of v0.16.0, hence trimmed tagName(i.e 0.16 for example)
     git checkout -b release-${tagName:1:4} $commitSha
     git push origin release-${tagName:1:4}
-    echo "created release branch for ${tagName:1:4}"
+    echo "created release-${tagName:1:4} branch"
 fi
 
 # Syncing 
@@ -67,7 +67,7 @@ declare -i cc=0;
 declare -i cb=0;
 
 IFS=$'\n'
-echo "In Upstream tanzu-framework"
+echo "Tags on Upstream tanzu-framework : "
 for i in $(git ls-remote --tags origin)
 do
 	echo "$i"
@@ -76,7 +76,7 @@ do
 	fi
 done
 
-echo "In downstream k8s-common-core"
+echo "Tags on downstream k8s-common-core mirror"
 for i in $(git ls-remote --tags k8scommonmirror)
 do
 	echo "$i"
@@ -97,13 +97,13 @@ done
 if [[ $val == 1 ]];then
 	echo "Tag ${tagName} validated successfully on upstream tanzu-framework"
 	else
-	echo "Tag ${tagName} not pushed on upstream tanzu-framework"
+	echo "Tag ${tagName} validation failed on upstream tanzu-framework"
 fi
 
 if [[ $cc == 1 ]];then
 	echo "Tag ${tagName} validated successfully on downstream k8s-common-core mirror"
 	else
-	echo "Tag ${tagName} not pushed on downstream k8s-common-core mirror"
+	echo "Tag ${tagName} validation failed on downstream k8s-common-core mirror"
 fi
 
 #if [[ $cb == 1 ]];then
