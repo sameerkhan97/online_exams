@@ -15,11 +15,11 @@ pipeline {
                         echo "COMMIT_SHA not provided"
                         exit 1
                     fi
-                    if [[ -z "$TANZU_FRAMEWORK_RELEASE_VERSION" || "$TANZU_FRAMEWORK_RELEASE_VERSION" == "v0.18.0" ]];then
-                        echo "Correct tag not provided"
+                    if [[ -z "$TANZU_FRAMEWORK_RELEASE_VERSION" ]];then
+                        echo "Tag not provided"
                         exit 1
                     fi
-                   ./tagging-script.sh ${TANZU_FRAMEWORK_RELEASE_VERSION} ${COMMIT_SHA} ${USER_NAME} ${USER_EMAIL}
+                   ./tagging-script.sh ${TANZU_FRAMEWORK_RELEASE_VERSION} ${COMMIT_SHA}
                 '''
             }
         }

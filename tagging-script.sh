@@ -7,24 +7,22 @@
 #4) Git user email to push tag.
 tagName=$1
 commitSha=$2
-userName=$3
-userEmail=$4
+USER_NAME=${USER_NAME:-'alfredthenarwhal'}
+USER_EMAIL=${USER_EMAIL:-'alfredthenarwhal@users.noreply.github.com'}
 
 if [[ -z "$commitSha" ]];then
     echo "COMMIT_SHA not provided"
     exit 1
 fi
-if [[ -z "$tagName" || ${tagName:0:1} != "v" ]];then
+if [[ -z "$tagName" ]];then
     echo "tag not provided or incorrect tag"
     exit 1
 fi
 
-IFS='.'
-read -a strarr <<<"$tagName"  
-declare -i X=${strarr[0]:1};
-declare -i Y=${strarr[1]};  
-declare -i Z=${strarr[2]};  
-IFS=' '
+#Adding 'v' if not provided with the tag
+if [[ ${tagName:0:1} != "v" ]];then
+    tagName="v${tagName}"
+fi
 
 k8scommonmirror="git@gitlab.eng.vmware.com:sameerkh/mirrors_github_tanzu-framework.git"
 #k8scoremirror="git@gitlab.eng.vmware.com:core-build/mirrors_github_tanzu-framework.git"
@@ -37,8 +35,8 @@ echo "repository cloned"
 cd $tmp_dir
 
 #adding allfered bot configs
-git config user.name ${userName}
-git config user.email ${userEmail}
+git config user.name ${USER_NAME}
+git config user.email ${USER_EMAIL}
 
 #adding remote
 git remote add k8scommonmirror $k8scommonmirror
@@ -54,6 +52,14 @@ fi
 git push origin $tagName
 echo "tag pushed"
 
+#Extracting major, minor, patch version from given tag
+IFS='.'
+read -a strarr <<<"$tagName"  
+declare -i X=${strarr[0]:1};
+declare -i Y=${strarr[1]};  
+declare -i Z=${strarr[2]};  
+IFS=' '
+
 #Creating a release branch if the tag pushed is not a dev tag.
 #If it has the -dev tag then release branch won't be created
 if [[ "$tagName" != *"-dev"* ]];then
@@ -67,6 +73,13 @@ fi
 git push k8scommonmirror $tagName
 #git push k8scoremirror $tagName
 echo "syncing completed"
+
+# force cleanup before exit
+cleanup() {
+    echo "Cleanup before exit"
+    rm -rf  $tmp_dir
+}
+trap cleanup EXIT
 
 #Listing and validating tags for all remotes
 declare -i tf=0;
@@ -120,6 +133,3 @@ fi
 #	else
 #	echo "Tag ${tagName} not pushed on downstream k8s-core-build mirror"
 #fi
-
-#clearing the temp directory
-rm -rf $tmp_dir
