@@ -4,7 +4,7 @@
 #1) Tag version, for example v0.19.0.
 #2) Commit sha for the commit you want to tag.
 #3) Git user name to push tag.
-#3) Git user email to push tag.
+#4) Git user email to push tag.
 tagName=$1
 commitSha=$2
 userName=$3
@@ -14,10 +14,17 @@ if [[ -z "$commitSha" ]];then
     echo "COMMIT_SHA not provided"
     exit 1
 fi
-if [[ -z "$tagName" ]];then
-    echo "Tag not provided"
+if [[ -z "$tagName" || ${tagName:0:1} != "v" ]];then
+    echo "tag not provided or incorrect tag"
     exit 1
 fi
+
+IFS='.'
+read -a strarr <<<"$tagName"  
+
+declare -i X=${strarr[0]:1};
+declare -i Y=${strarr[1]};  
+declare -i Z=${strarr[2]};  
 
 k8scommonmirror="git@gitlab.eng.vmware.com:sameerkh/mirrors_github_tanzu-framework.git"
 #k8scoremirror="git@gitlab.eng.vmware.com:core-build/mirrors_github_tanzu-framework.git"
@@ -51,9 +58,9 @@ echo "tag pushed"
 #If it has the -dev tag then release branch won't be created
 if [[ "$tagName" != *"-dev"* ]];then
     #while release branch we only use 0.16 instead of v0.16.0, hence trimmed tagName(i.e 0.16 for example)
-    git checkout -b release-${tagName:1:4} $commitSha
-    git push origin release-${tagName:1:4}
-    echo "created release-${tagName:1:4} branch"
+    git checkout -b release-${X}.${Y} $commitSha
+    git push origin release-${X}.${Y}
+    echo "created release-${X}.${Y} branch"
 fi
 
 # Syncing 
@@ -98,12 +105,14 @@ if [[ $tf == 1 ]];then
 	echo "Tag ${tagName} validated successfully on upstream tanzu-framework"
 	else
 	echo "Tag ${tagName} validation failed on upstream tanzu-framework"
+	exit 1
 fi
 
 if [[ $cc == 1 ]];then
 	echo "Tag ${tagName} validated successfully on downstream k8s-common-core mirror"
 	else
 	echo "Tag ${tagName} validation failed on downstream k8s-common-core mirror"
+	exit 1
 fi
 
 #if [[ $cb == 1 ]];then
