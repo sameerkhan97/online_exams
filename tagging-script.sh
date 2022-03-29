@@ -21,10 +21,10 @@ fi
 
 IFS='.'
 read -a strarr <<<"$tagName"  
-
 declare -i X=${strarr[0]:1};
 declare -i Y=${strarr[1]};  
 declare -i Z=${strarr[2]};  
+IFS=' '
 
 k8scommonmirror="git@gitlab.eng.vmware.com:sameerkh/mirrors_github_tanzu-framework.git"
 #k8scoremirror="git@gitlab.eng.vmware.com:core-build/mirrors_github_tanzu-framework.git"
