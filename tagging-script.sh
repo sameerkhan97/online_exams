@@ -41,7 +41,7 @@ cleanup() {
 trap cleanup EXIT
 
 git clone git@github.com:sameerkhan97/tanzu-framework.git $tmp_dir
-echo "repository cloned"
+echo "Tanzu Framework upstream repository cloned"
 cd $tmp_dir
 
 #adding allfered bot configs
@@ -51,7 +51,7 @@ git config user.email ${USER_EMAIL}
 #adding remote
 git remote add k8scommonmirror $k8scommonmirror
 #git remote add k8scoremirror $k8scoremirror
-echo "remotes added"
+echo "k8s-common-core & core-build remotes added"
 
 # release tag
 if [[ "$tagName" != *"-dev"* ]];then
@@ -60,7 +60,7 @@ if [[ "$tagName" != *"-dev"* ]];then
     git tag -a $tagName -m "Dev tag for ${tagName:0:7} release of Tanzu Framework" $commitSha
 fi
 git push origin $tagName
-echo "tag pushed"
+echo "Tag $tagName pushed on upstream Tanzu Framework repository"
 
 #Extracting major, minor, patch version from given tag
 IFS='.'
@@ -76,13 +76,13 @@ if [[ "$tagName" != *"-dev"* ]];then
     #while release branch we only use 0.16 instead of v0.16.0, hence trimmed tagName(i.e 0.16 for example)
     git checkout -b release-${X}.${Y} $commitSha
     git push origin release-${X}.${Y}
-    echo "created release-${X}.${Y} branch"
+    echo "Created release-${X}.${Y} branch on upstream Tanzu Framework repository"
 fi
 
 # Syncing 
 git push k8scommonmirror $tagName
 #git push k8scoremirror $tagName
-echo "syncing completed"
+echo "Syncing with downstream mirrors completed"
 
 #Listing and validating tags for all remotes
 declare -i tf=0;
