@@ -5,6 +5,9 @@
 #2) Commit sha for the commit you want to tag.
 #3) Git user name to push tag.
 #4) Git user email to push tag.
+
+set -o errexit
+
 tagName=$1
 commitSha=$2
 USER_NAME=${USER_NAME:-'alfredthenarwhal'}
@@ -29,6 +32,13 @@ k8scommonmirror="git@gitlab.eng.vmware.com:sameerkh/mirrors_github_tanzu-framewo
 
 #making temperory directory to avoid error
 tmp_dir=$(mktemp -d)
+
+#force cleanup before exit
+cleanup() {
+    echo "Cleanup before exit"
+    rm -rf $tmp_dir
+}
+trap cleanup EXIT
 
 git clone git@github.com:sameerkhan97/tanzu-framework.git $tmp_dir
 echo "repository cloned"
@@ -74,13 +84,6 @@ git push k8scommonmirror $tagName
 #git push k8scoremirror $tagName
 echo "syncing completed"
 
-# force cleanup before exit
-cleanup() {
-    echo "Cleanup before exit"
-    rm -rf  $tmp_dir
-}
-trap cleanup EXIT
-
 #Listing and validating tags for all remotes
 declare -i tf=0;
 declare -i cc=0;
@@ -116,14 +119,14 @@ done
 
 if [[ $tf == 1 ]];then
 	echo "Tag ${tagName} validated successfully on upstream tanzu-framework"
-	else
+else
 	echo "Tag ${tagName} validation failed on upstream tanzu-framework"
 	exit 1
 fi
 
 if [[ $cc == 1 ]];then
 	echo "Tag ${tagName} validated successfully on downstream k8s-common-core mirror"
-	else
+else
 	echo "Tag ${tagName} validation failed on downstream k8s-common-core mirror"
 	exit 1
 fi
